@@ -1,0 +1,17 @@
+[package]
+name = "advent-2020"
+version = "0.1.0"
+authors = ["David <dbosomworth@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "day1"
+path = "src/day1.rs"
+
+[dependencies]
