@@ -1,9 +1,18 @@
+use std::collections::HashMap;
 mod utility;
+
+
+
+//Our callback to the load_file_data 
+fn transform_data(values: &mut rHashMap<i64, i64>, data: &i64) {
+    let count = values.entry(*data).or_insert(0);
+    *count += 1;
+}
 
 fn main() {
     println!("Day 1!");
 
-    let expense_report = utility::load_file_data("./resources/day1.txt");
+    let expense_report = utility::load_and_transform_file_data("./resources/day1.txt", &transform_data);
     
     //go through the map, find 2020 - expense and see if it exists in the map
     //if it does, we found the matching pair;

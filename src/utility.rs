@@ -4,7 +4,9 @@ use std::io::BufRead;
 use std::collections::HashMap;
 
 // Loads a file into a hasmap where the data is the key, and the count of the data is the value
-pub fn load_file_data(filename: &str) -> HashMap<i64, i64> {
+// Normally we would leave the transformation to what's recieving the data, however, i wanted to learn 
+// about rust callbacks
+pub fn load_and_transform_file_data(filename: &str, transform_callback: &dyn Fn(&mut HashMap<i64, i64>, &i64)) -> HashMap<i64, i64> {
     
     //map to load data into
     let mut values:HashMap<i64, i64> = HashMap::new();
@@ -23,8 +25,7 @@ pub fn load_file_data(filename: &str) -> HashMap<i64, i64> {
 
     //transform our data into our map
     for data in line_data {
-        let count = values.entry(data).or_insert(0);
-        *count += 1;
+        transform_callback(&mut values, &data);
     }
 
     return values;
