@@ -10,9 +10,8 @@ Requirements
 ------------
 1. rust https://www.rust-lang.org/
 
-how to build
+How to build
 ------------
-example
 ```
 cargo run --bin day1
 ```
