@@ -1,9 +1,12 @@
 use std::collections::HashMap;
 mod utility;
 
+//Callback to parse the i64 line
+fn parse_row(line: &str) -> i64 {
+    line.parse::<i64>().unwrap()
+}
 
-
-//Our callback to the load_file_data 
+//Callback to transform the vector of i64 into a hashmap 
 fn transform_data(values: &mut HashMap<i64, i64>, data: &i64) {
     let count = values.entry(*data).or_insert(0);
     *count += 1;
@@ -12,7 +15,7 @@ fn transform_data(values: &mut HashMap<i64, i64>, data: &i64) {
 fn main() {
     println!("Day 1!");
 
-    let expense_report = utility::load_and_transform_file_data("./resources/day1.txt", &transform_data);
+    let expense_report = utility::load::<HashMap<i64, i64>, i64>("./resources/day1.txt", &parse_row, &transform_data);
     
     //go through the map, find 2020 - expense and see if it exists in the map
     //if it does, we found the matching pair;
