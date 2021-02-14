@@ -11,13 +11,14 @@ struct PasswordRule {
 struct PasswordEntry {
     rule: PasswordRule,
     password: String,
-    is_valid: bool
+    is_valid_part_one: bool,
+    is_valid_part_two: bool,
 }
 
 /*
-    is_password_valid calculates if password satisifies the min and max count of character 
+    is_part_one_password_valid calculates if password satisifies the min and max count of character 
 */
-fn is_password_valid(password: &str, min: &i64, max: &i64, character: &char) -> bool {
+fn is_part_one_password_valid(password: &str, min: &i64, max: &i64, character: &char) -> bool {
 
     let mut count: i64 = 0;
     for password_char in password.chars() {
@@ -27,6 +28,18 @@ fn is_password_valid(password: &str, min: &i64, max: &i64, character: &char) -> 
     }
 
     *min <= count && count <= *max
+}
+
+
+/*
+    is_part_two_password_valid calculates if password satisifies the position 1 or position 2 character requirements
+*/
+fn is_part_two_password_valid(password: &str, first_position: &usize, second_position: &usize, character: &char) -> bool {
+
+    let first_position_valid = password.chars().nth(*first_position - 1).unwrap() == *character;
+    let second_position_valid = password.chars().nth(*second_position - 1).unwrap() == *character;  
+
+    first_position_valid ^ second_position_valid
 }
 
 /*
@@ -50,9 +63,12 @@ fn parse_row(line: &str) -> PasswordEntry {
     let password = String::from(line_split[1]);
     let min = minmax_string_split[0].parse::<i64>().unwrap();
     let max = minmax_string_split[1].parse::<i64>().unwrap();
+    let first_position = minmax_string_split[0].parse::<usize>().unwrap();
+    let second_position = minmax_string_split[1].parse::<usize>().unwrap();
     let character = character.chars().nth(0).unwrap();
 
-    let is_valid = is_password_valid(&password, &min, &max, &character);
+    let is_valid_part_one = is_part_one_password_valid(&password, &min, &max, &character);
+    let is_valid_part_two = is_part_two_password_valid(&password, &first_position, &second_position, &character);
 
     //create an object and return it
     PasswordEntry {
@@ -62,7 +78,8 @@ fn parse_row(line: &str) -> PasswordEntry {
             character: character,
         }, 
         password: password, 
-        is_valid: is_valid,
+        is_valid_part_one: is_valid_part_one,
+        is_valid_part_two: is_valid_part_two,
     }
 }
 
@@ -78,22 +95,30 @@ fn transform_data(values: &mut Vec<PasswordEntry>, data: &PasswordEntry) {
             character: data.rule.character
         },
         password: String::from(&data.password),
-        is_valid: data.is_valid
+        is_valid_part_one: data.is_valid_part_one,
+        is_valid_part_two: data.is_valid_part_two,
     });
 }
 
 fn main() {
-    println!("Day 2: Part 1!");
+    println!("Day 2!");
 
     let passwords = utility::load::<Vec<PasswordEntry>, PasswordEntry>("./resources/day2.txt", &parse_row, &transform_data);
 
-    let mut valid_count = 0;
+    let mut part_one_valid_count = 0;
+    let mut part_two_valid_count = 0;
+    
     for password in passwords {
-        if password.is_valid == true {
-            valid_count += 1;
+
+        if password.is_valid_part_one == true {
+            part_one_valid_count += 1;
+        }
+
+        if password.is_valid_part_two == true {
+            part_two_valid_count += 1;
         }
     }
 
-    println!("Number of invalid passwords: {}", valid_count);
-    
+    println!("(Part One) Number of invalid passwords: {}", part_one_valid_count);
+    println!("(Part Two) Number of invalid passwords: {}", part_two_valid_count);
  }
